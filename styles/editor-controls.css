@@ -1,0 +1,162 @@
+.editor-controls{
+    padding: 1.4em 2.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.editor-controls > div{
+    text-align: center;
+}
+.editor-controls .editor-control
+{
+    display: block;
+    height: calc(1.5em + .75rem - 2px);
+    padding: .375rem .75rem;
+    font-size: 1.5em;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #22252c;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.editor-controls .sqr-btn{
+    display: inline-block;
+    cursor: pointer;
+    width: 1.75em;
+    height: 1.57em;
+    box-shadow: 0px 5px 4px 0px black;
+    border-radius: 7px;
+    font-size: 2em;
+    
+}
+#meme-line{
+    width: 100%;
+    border-radius: 40px;
+    text-align: center;
+    color: #3d3d3d;
+    box-shadow: 0px 3px 3px 0px #bbc4d1;
+}
+#meme-line:focus, select:focus{
+    outline: none;
+    box-shadow: 0px 0px 0px 3px #a7b5c8;
+}
+.line-controls{
+    color: white;
+    justify-content: center;
+    margin-top: 0.9em;
+    margin-bottom: 1.5em;
+}
+.line-controls span:not(:last-child){
+    margin-right: 0.8em;
+}
+.line-controls span.narrow{
+    width: 1.1em;
+}
+.line-controls span.narrow:first-child{
+    margin-right: 0.4em;
+}
+.line-controls span i{
+    text-shadow: 0px 4px 2px black;
+}
+.line-controls .line-move{
+    background-color: #34abca;
+    box-shadow: 0px 5px 2px 0px #048b97;
+}
+.line-controls .line-add{
+    background-color: #40df58;
+    box-shadow: 0px 5px 2px 0px #015d33;
+}
+.line-controls .line-delete{
+    background-color: #da2e37;
+    box-shadow: 0px 5px 2px 0px #8c0606;
+}
+.line-controls .switch-lines{
+    background-color: #3A5683;
+}
+
+/* Font Controls */
+.font-controls{
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-radius: .8em;
+    padding: 1em 0.75em;
+    margin-bottom: 2em;
+}
+.font-controls .sqr-btn{
+    background-color: white;
+    font-size: 1.43em;
+    width: 2em;
+    height: 2em;
+    margin-bottom: 1em;
+    box-shadow: 0px 5px 4px 0px #3e7d7a;
+}
+.font-controls .sqr-btn i{
+    position: relative;
+    top: 5px;
+}
+.font-controls .sqr-btn .fa-plus,
+.font-controls .sqr-btn .fa-minus{
+    font-size: 0.4em;
+    position: relative;
+    top: -0.9em;
+}
+.fonts-select{
+    border-radius: 7px;
+    box-shadow: 0px 5px 4px 0px #3e7d7a;
+}
+.letter-s{
+    text-decoration: underline;
+    top: 0.25em;
+    left: -0.6em;
+}
+.stroke-color, .fill-color{
+    position: relative;
+}
+.stroke-color img, .fill-color img{
+    opacity: 0;
+}
+#stroke-color-input, #fill-color-input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.font-controls .sqr-btn .fa-paint-brush{
+    position: relative;
+    top: -2.5em;
+    left: 0.3em;
+}
+.font-controls .sqr-btn .fa-palette{
+    position: relative;
+    top: -1.3em;
+    left: -0.1em;
+}
+.share-controls{
+    justify-content: space-around;
+}
+.share-controls .btn{
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0.4em 0em;
+    width: 44%;
+    color: white;
+    font-family: Poppins;
+    border: none;
+}
+.share-controls .fas{
+    margin-right: 0.5em;
+}
+.share-controls .share-btn{
+    background-color: #1e7cd3;
+    box-shadow: 0px 4px #165c9c;
+}
+.share-controls .download-btn{
+    background-color: #8f44bb;
+    box-shadow: 0px 4px #632687;
+    text-decoration: none;
+}

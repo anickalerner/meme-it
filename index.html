@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme-it</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <link href="/vendor/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/editor-controls.css" />
+</head>
+
+<body onload="init()">
+    <div class="main-wrapper">
+        <nav class="color-transition">
+            <a class="nav-brand">Meme-it</a>
+            <div class="nav-tabs-container">
+                <ul class="nav-tabs">
+                    <li>
+                        <a href="#" onclick="updateView(true)" class="btn gallery-btn">Gallery</a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="updateView(false)" class="btn editor-btn">Editor</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main>
+            <div class="editor-container">
+                <div class="canvas-area">
+                    <canvas id="editor" width="500" height="500"></canvas>
+                    <div class="line-border"></div>
+                </div>
+                <div class="editor-controls">
+                    <div class="meme-line-container">
+                        <input type="text" class="editor-control meme-line" id="meme-line" onkeyup="onLineInput(event)"
+                            placeholder="Insert your text here" />
+                    </div>
+                    <div class="line-controls row">
+                        <span class="sqr-btn line-move line-move-down narrow" onclick="onMoveLine(10)">
+                            <i class="fas fa-long-arrow-alt-down"></i>
+                        </span>
+                        <span class="sqr-btn line-move line-move-up narrow" onclick="onMoveLine(-10)">
+                            <i class="fas fa-long-arrow-alt-up"></i>
+                        </span>
+                        <span class="sqr-btn switch-lines" onclick="onSwitchLines()">
+                            <i class="fas fa-text-height"></i>
+                        </span>
+                        <span class="sqr-btn line-add" onclick="onAddLine()"><i class="fas fa-plus"></i></span>
+                        <span class="sqr-btn line-delete" onclick="onLineDelete()"><i class="fas fa-trash"></i></span>
+                    </div>
+                    <div class="font-controls row">
+                        <span class="sqr-btn" onclick="onFontChange(2)"><i class="fas fa-font"></i><i
+                                class="fas fa-plus"></i></span>
+                        <span class="sqr-btn" onclick="onFontChange(-2)"><i class="fas fa-font"></i><i
+                                class="fas fa-minus"></i></span>
+                        <span class="sqr-btn" onclick="onAlignLine('left')"><i class="fas fa-align-left"></i></span>
+                        <span class="sqr-btn" onclick="onAlignLine('center')"><i class="fas fa-align-center"></i></span>
+                        <span class="sqr-btn" onclick="onAlignLine('right')"><i class="fas fa-align-right"></i></span>
+                        <select class="editor-control fonts-select" onchange="onFontSelect(this)">
+                        </select>
+                        <span class="stroke-color sqr-btn">
+                            <input type="color" id="stroke-color-input" onchange="onStrokeColorChange(event)">
+                            <i class="fas letter-s" onclick="onStrokeClicked()">S</i>
+                        </span>
+                        <span class="fill-color sqr-btn">
+                            <input type="color" id="fill-color-input" onchange="onFillColorChange(event)">
+                            <i class="fas fa-palette" onclick="onFillClicked()"></i><i class="fas fa-paint-brush" onclick="onFillClicked()"></i>
+                        </span>
+
+                    </div>
+                    <div class="share-controls row">
+                        <button class="share-btn btn"><i class="fas fa-share-alt"></i>Share</button>
+                        <a href="#" class="download-btn btn" onclick="downloadMeme(this)" download="meme.gif"><i class="fas fa-download"></i>Download</a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-container">
+                <div class="controls"></div>
+                <div class="gallery"></div>
+            </div>
+        </main>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/editor-controller.js"></script>
+    <script src="js/gallery-service.js"></script>
+    <script src="js/gallery-service.js"></script>
+    <script src="js/gallery-controller.js"></script>
+    <script src="js/meme-service.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</body>
+
+</html>
