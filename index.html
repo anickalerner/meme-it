@@ -17,17 +17,20 @@
             <a class="nav-brand">Meme-it</a>
             <div class="nav-tabs-container">
                 <ul class="nav-tabs">
-                    <li>
-                        <a href="#" onclick="updateView(true)" class="btn gallery-btn">Gallery</a>
+                    <li class="nav-li hide">
+                        <a href="#" onclick="updateView('gallery')" class="btn gallery-btn nav-btn">Gallery</a>
                     </li>
-                    <li>
-                        <a href="#" onclick="updateView(false)" class="btn editor-btn">Editor</a>
+                    <li class="nav-li hide">
+                        <a href="#" onclick="updateView('editor')" class="btn editor-btn nav-btn">Editor</a>
+                    </li>
+                    <li class="nav-li hide">
+                        <a href="#" onclick="updateView('mymemes')" class="btn mymemes-btn">My Memes</a>
                     </li>
                 </ul>
             </div>
         </nav>
         <main>
-            <div class="editor-container">
+            <div class="editor-container container-item">
                 <div class="canvas-area">
                     <canvas id="editor" width="500" height="500"></canvas>
                     <div class="line-border"></div>
@@ -38,7 +41,7 @@
                             placeholder="Insert your text here" />
                     </div>
                     <div class="line-controls row">
-                        <span class="sqr-btn line-move line-move-down narrow" onclick="onMoveLine(10)">
+                        <!--<span class="sqr-btn line-move line-move-down narrow" onclick="onMoveLine(10)">
                             <i class="fas fa-long-arrow-alt-down"></i>
                         </span>
                         <span class="sqr-btn line-move line-move-up narrow" onclick="onMoveLine(-10)">
@@ -46,7 +49,7 @@
                         </span>
                         <span class="sqr-btn switch-lines" onclick="onSwitchLines()">
                             <i class="fas fa-text-height"></i>
-                        </span>
+                        </span>-->
                         <span class="sqr-btn line-add" onclick="onAddLine()"><i class="fas fa-plus"></i></span>
                         <span class="sqr-btn line-delete" onclick="onLineDelete()"><i class="fas fa-trash"></i></span>
                     </div>
@@ -66,18 +69,41 @@
                         </span>
                         <span class="fill-color sqr-btn">
                             <input type="color" id="fill-color-input" onchange="onFillColorChange(event)">
-                            <i class="fas fa-palette" onclick="onFillClicked()"></i><i class="fas fa-paint-brush" onclick="onFillClicked()"></i>
+                            <i class="fas fa-palette" onclick="onFillClicked()"></i><i class="fas fa-paint-brush"
+                                onclick="onFillClicked()"></i>
                         </span>
 
                     </div>
-                    <div class="share-controls row">
-                        <button class="share-btn btn"><i class="fas fa-share-alt"></i>Share</button>
-                        <a href="#" class="download-btn btn" onclick="downloadMeme(this)" download="meme.gif"><i class="fas fa-download"></i>Download</a>
+                    <div class="share-controls">
+                        <div class="share-container">
+                            <button class="share-btn btn" onclick="onShareClicked()"><i
+                                    class="fas fa-share-alt"></i>Share</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#" onclick="onSaveMeme()">Save</a>
+                                <a class="dropdown-item" href="#" onclick="onDownloadMeme(this)"
+                                    download="meme.gif">Download</a>
+                                <a class="dropdown-item upload-link" href="#" onclick="onUploadMeme(event)">Upload...</a>
+                                <form action="" method="POST" enctype="multipart/form-data">
+                                    <input name="img" id="canvasData" type="hidden" />
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="gallery-container">
-                <div class="controls"></div>
+            <div class="gallery-container container-item rounded-corners">
+                <div class="controls">
+                    <div class="search-group">
+                        <input type="text" onkeydown="onSearchStart(event)" class="search-by-keywords" placeholder="Search"/>
+                        <i class="fas fa-times clear-icon"></i>
+                    </div>
+                    <div class="keywords-map">
+                        
+                    </div>
+                </div>
+                <div class="gallery"></div>
+            </div>
+            <div class="mymemes-container container-item rounded-corners">
                 <div class="gallery"></div>
             </div>
         </main>
@@ -88,6 +114,9 @@
     <script src="js/gallery-service.js"></script>
     <script src="js/gallery-controller.js"></script>
     <script src="js/meme-service.js"></script>
+    <script src="js/mymemes-controller.js"></script>
+    <script src="js/mymemes-service.js"></script>
+    <script src="js/share-service.js"></script>
     <script src="js/main.js"></script>
 </body>
 </body>

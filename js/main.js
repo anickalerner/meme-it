@@ -1,28 +1,57 @@
 'use strict';
-var gGalleryMode = true;
+const LOCALSTORAGE_PREFIX = 'MEME-IT';
+
 function init() {
     initGallery();
     initEditor();
+    updateView('gallery');
+    renderSavedMemes();
 }
 
-function updateView(galleryView = true) {
-    gGalleryMode = galleryView;
-    if (gGalleryMode) {
-        document.querySelector('.gallery-container').style.display = 'block';
-        document.querySelector('.editor-container').style.display = 'none';
-
-        document.querySelector('.gallery-btn').style.display = 'none';
-        var showEditor = (gMeme.selectedImgId >= 0) ? 'inline-block' : 'none'
-        document.querySelector('.editor-btn').style.display = showEditor;
-    }
-    else {
-        //Editor mode
-        document.querySelector('.gallery-container').style.display = 'none';
-        document.querySelector('.editor-container').style.display = 'flex';
-
-        document.querySelector('.editor-btn').style.display = 'none';
-        document.querySelector('.gallery-btn').style.display = 'inline-block';
+function updateView(view = 'gallery') {
+    switch (view) {
+        case 'gallery':
+            showContainer('.gallery-container');
+            hideContainer('.editor-container');
+            hideContainer('.mymemes-container');
+            checkShowEditorButton();
+            break;
+        case 'editor':
+            showContainer('.editor-container', 'flex');
+            hideContainer('.gallery-container');
+            hideContainer('.mymemes-container');
+            showNavBtn('.gallery-btn');
+            resetLineField();
+            break;
+        case 'mymemes':
+            showContainer('.mymemes-container');
+            hideContainer('.gallery-container');
+            hideContainer('.editor-container');
+            checkShowEditorButton();
+            showNavBtn('.gallery-btn');
+            break;
+        default:
+            break;
     }
 }
 
+function checkShowEditorButton() {
+    if (gMeme && gMeme.selectedImgId >= 0){
+        showNavBtn('.editor-btn');
+    }    
+}
+
+function showNavBtn(btn){
+    var classes = document.querySelector(btn).parentElement.classList;
+    classes.remove('hide');
+    classes.add('show');
+}
+
+function showContainer(container, display = 'block'){
+    document.querySelector(container).style.display = display;
+}
+
+function hideContainer(container){
+    document.querySelector(container).style.display = 'none';
+}
 

@@ -1,21 +1,26 @@
 'use strict';
-var gMeme = {
-    selectedImgId: -1,
-    selectedLineIdx: -1,
-    lines: [],
-    img: null,
-    outlineColor: 'rgba(128, 122, 117, 50%)',
-    activeOutlineColor: 'rgba(255, 255, 255, 90%)'
-};
+var gMeme = {};
 
+function createNewMeme() {
+    gMeme = {
+        id: '',
+        selectedImgId: -1,
+        selectedLineIdx: -1,
+        lines: [],
+        outlineColor: 'rgba(128, 122, 117, 50%)',
+        activeOutlineColor: 'rgba(255, 255, 255, 90%)'
+    };
+}
 
 function setCurrentMeme(image) {
+    createNewMeme();    
     gMeme.selectedImgId = image.id;
 }
 
 function createLine(txt) {
     // First time line creation    
     if (gMeme.lines.length === 0) {
+        gMeme.id = `img-${gMeme.selectedImgId}-${getDateString()}`;
         gMeme.lines.push({
             txt: '',
             size: 48,
