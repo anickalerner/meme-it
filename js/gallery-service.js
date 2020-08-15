@@ -70,6 +70,5 @@ function orderMap(){
     orderedMap.sort(function(a, b) {
         return b[1] - a[1];
     });
-    console.log(orderedMap);
     renderKeywordsMap(orderedMap);
 }
