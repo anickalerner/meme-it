@@ -14,6 +14,7 @@ function updateView(view = 'gallery') {
             showContainer('.gallery-container');
             hideContainer('.editor-container');
             hideContainer('.mymemes-container');
+            hideNavBtn('.gallery-btn');
             checkShowEditorButton();
             break;
         case 'editor':
@@ -45,6 +46,12 @@ function showNavBtn(btn){
     var classes = document.querySelector(btn).parentElement.classList;
     classes.remove('hide');
     classes.add('show');
+}
+
+function hideNavBtn(btn){
+    var classes = document.querySelector(btn).parentElement.classList;
+    classes.remove('show');
+    classes.add('hide');
 }
 
 function showContainer(container, display = 'block'){
