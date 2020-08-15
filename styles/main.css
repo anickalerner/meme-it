@@ -150,7 +150,7 @@ nav .btn {
     display: none;
     flex-direction: row;
     justify-content: space-around;
-    background-image: url(/images/meme-editor-bg.jpg);
+    background-image: url(../images/meme-editor-bg.jpg);
     background-repeat: no-repeat;
     max-width: 1280px;
 }
