@@ -1,17 +1,15 @@
 'use strict';
 
-var IMAGE_PATH = 'images/gallery-500/';
+var IMAGE_PATH = 'images/gallery-various/';
 var gImages = [];
-var gKeywords = ['happy', 'funny', 'cat', 'dog', 'baby'];
+var gPopularSearchTerms = {happy: 3, funny: 4, cat: 8, dog: 5, baby:3};
 var gKeywordsMap = {};
 
 function createImages() {
     for (let i = 1; i <= 18; i++) {
-        var keyword = getRandomKeyWord();
         gImages.push({
             id: i,
             url: getImageUrl(i)
- //           keywords: [keyword]
         })
     }
     gImages[0].keywords = ['man', 'usa', 'trump'];
@@ -32,15 +30,12 @@ function createImages() {
     gImages[15].keywords = ['man', 'funny'];
     gImages[16].keywords = ['man', 'russia', 'putin'];
     gImages[17].keywords = ['cartoon', 'funny'];
-    mapKeyWords();
+    //mapKeyWords();
+    orderSearchTerms();
 }
 
 function getImageUrl(id){
     return `${IMAGE_PATH}${id}.jpg`;
-}
-
-function getRandomKeyWord() {
-    return gKeywords[getRandomIntInclusive(0, gKeywords.length - 1)];
 }
 
 function mapKeyWords() {
@@ -62,13 +57,20 @@ function getImageByElementId(id){
     return gImages[+id - 1];
 }
 
-function orderMap(){
-    var orderedMap = [];
-    for (const key in gKeywordsMap) {
-        orderedMap.push([key, gKeywordsMap[key]]);
+function orderSearchTerms(){
+    var orderedSearchTerms = [];
+    for (const key in gPopularSearchTerms) {
+        //orderedSearchTerms.push([key, gPopularSearchTerms[key]]);
+        // fake triple votes
+        orderedSearchTerms.push([key, gPopularSearchTerms[key]*3]);
     }
-    orderedMap.sort(function(a, b) {
+    orderedSearchTerms.sort(function(a, b) {
         return b[1] - a[1];
     });
-    renderKeywordsMap(orderedMap);
+    renderSearchTermsMap(orderedSearchTerms);
+}
+
+function increaseSearchTermCount(term){
+    gPopularSearchTerms[term]++;
+    orderSearchTerms();
 }

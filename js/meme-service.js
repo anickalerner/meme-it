@@ -7,8 +7,11 @@ function createNewMeme() {
         selectedImgId: -1,
         selectedLineIdx: -1,
         lines: [],
+        selectedStickerIdx: -1,
+        stickers: [],
         outlineColor: 'rgba(128, 122, 117, 50%)',
-        activeOutlineColor: 'rgba(255, 255, 255, 90%)'
+        activeOutlineColor: 'rgba(255, 255, 255, 90%)',
+        size: {width: 500, height: 500}
     };
 }
 

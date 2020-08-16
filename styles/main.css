@@ -95,6 +95,7 @@ nav{
     text-transform: uppercase;
     font-size: 1.3em;
     line-height: 2.7em;
+    min-width: 90px;
 }
 .nav-tabs-container ul{
     list-style: none;
@@ -134,7 +135,18 @@ nav .btn {
 .gallery{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(12.5em, 1fr));
-    grid-gap: 1.875em; }
+    grid-gap: 1.875em;
+    /* display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	height: 100vw;
+    font-size: 0;  */
+}
+/* Re-order items into rows */
+/* .gallery img{
+    width: 24%;
+    margin-bottom: 13px;
+} */
 
 .gallery img{
     width: 100%;
@@ -154,12 +166,14 @@ nav .btn {
     background-repeat: no-repeat;
     max-width: 1280px;
 }
-.editor-container > div{
-    width: 477px;
+.editor-container > div{    
     border-radius: 40px;
 }
+.editor-controls{
+    max-width: 477px;
+    margin-left: 2em;
+}
 #editor{
-    width: 100%;
     border-radius: 40px;
     border: 7px solid rgba(255, 255, 255, 15%);
 }
@@ -209,21 +223,9 @@ nav .btn {
     cursor: pointer;
 }
 
-@media (max-width: 980px) {
-    .editor-container > div{
-        width: 50%; 
-    } 
-    .editor-controls .editor-control {
-        font-size: 1.3em !important;
-    }
-    .font-controls .sqr-btn {
-        font-size: 1.3em;
-        width: 1.75em;
-        height: 1.75em;
-    }
-}
 
-@media (max-width: 740px) {
+
+@media (max-width: 880px) {
     .editor-container {
         flex-direction: column;        
     } 
@@ -232,10 +234,29 @@ nav .btn {
     } 
     nav{
         padding-left: 2em;
-        padding-right: 2em;
+        padding-right: 1.5em;
     }
-    .nav-tabs-container ul li {
-        margin-right: 0em;
+    .nav-tabs-container ul li,
+    .nav-tabs-container ul li.show {
+        margin-right: 0.5em;
+    }
+    .controls{
+        flex-direction: column;
+        margin-block-end: 1em;
+    }
+    .search-group{
+        width: 100%;
+        margin-block-end: 1em;
+    }
+    .keywords-map{
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-content: flex-start;
+        width: 100%;
+        padding: 0.5em 1.5em;
+    }
+    .keywords-map span{
+        margin-inline-end: 1em;
     }
 }
 

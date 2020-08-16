@@ -17,6 +17,7 @@ function imageSelected(elImg){
     var elImageId = elImg.dataset.id;
     setCurrentMeme(getImageByElementId(elImageId));
     updateView('editor');
+    updateCanvasSize(elImg);
     renderMeme();
 }
 
@@ -24,7 +25,6 @@ function onSearchStart(event){
     var code = event.keyCode;
     if ((code >= 65 && code <=90) || (code >=97 && code <= 122)){ // a letter is entered
         gSearchTerm += String.fromCharCode(code);
-        console.log(gSearchTerm);
     }
     if (code === 8){ // Backspace is pressed
         gSearchTerm = gSearchTerm.substr(0, gSearchTerm.length-1);
@@ -51,11 +51,19 @@ function filterImages(term){
     showImages(filtered);
 }
 
-function renderKeywordsMap(orderedMap){
+function renderSearchTermsMap(orderedMap){
+    var firstFont = orderedMap[0][1];
+    var biggestFont = Math.min(firstFont, 40);
+    var ratio = biggestFont / firstFont;
     var elWords = orderedMap.slice(0, 5).reduce((acc, word) => {
-        return acc+= `<span class="keyword" style="font-size: ${16 + (+word[1])}px" onclick="searchByKeyWord('${word[0]}')">${word[0]}</span>`;
+        return acc+= `<span class="keyword" style="font-size: ${Math.max(+word[1] * ratio, 12)}px" onclick="countSearchTerm('${word[0]}')">${word[0]}</span>&nbsp;`;
     }, '');
     document.querySelector('.keywords-map').innerHTML = elWords;
+}
+
+function countSearchTerm(term){
+    searchByKeyWord(term);
+    increaseSearchTermCount(term);
 }
 
 function searchByKeyWord(term){

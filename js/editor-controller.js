@@ -4,20 +4,32 @@ var gCtx;
 var gLineYInitPositions;
 var gCanvasFocus = false;
 var gIsDragging = false;
+
 const FONTS = ['Impact', 'Arial', 'Comic Sans M', 'Helvetica', 'Times New Roman', 'Times',
     'Courier New', 'Courier', 'Verdana', 'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Trebuchet MS', 'Arial Black'];
 const EDITOR_PADDING = 20;
 const LINE_X = EDITOR_PADDING + 5;
 const OUTLINE_PADDING = 10;
+const MAX_CANVAS_WIDTH = 500;
 
 function initEditor() {
     gCanvas = document.getElementById("editor");
     gCanvas.addEventListener('mousedown', onCanvasMouseDown);
-    gCanvas.addEventListener('mousemove', onLineMove);
+    gCanvas.addEventListener('mousemove', onCanvasMove);
+    gCanvas.addEventListener('mouseup', onCanvasMouseUp);
     window.addEventListener('mouseup', onMouseUp);
     gCtx = gCanvas.getContext("2d");
     gLineYInitPositions = [EDITOR_PADDING * 2, gCanvas.height - EDITOR_PADDING, gCanvas.height / 2, gCanvas.height * 0.25, gCanvas.height * 0.75];
     initFontsSelect();
+    initStickers();
+}
+
+function updateCanvasSize(elImg) {
+    var imageRatio = elImg.height / elImg.width;
+    gCanvas.width = Math.min(elImg.width, MAX_CANVAS_WIDTH);
+    gCanvas.height = gCanvas.width * imageRatio;
+    gMeme.size.width = gCanvas.width;
+    gMeme.size.height = gCanvas.height;
 }
 
 function initFontsSelect() {
@@ -32,10 +44,15 @@ function renderMeme() {
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
     var img = document.getElementById('img-' + gMeme.selectedImgId);
     gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
-    gMeme.lines.forEach((line, ind) => {
+    drawLines(gMeme);
+    drawStickers(gMeme);
+}
+
+function drawLines(meme){
+    meme.lines.forEach((line, ind) => {
         var x = getLineX(line);
         var y = getLineY(line, ind);
-        gCanvasFocus && drawLineOutline(line, ind);
+        if (gCanvasFocus && meme.selectedLineIdx > -1) drawLineOutline(line, ind);
         gCtx.font = `${line.size}px ${line.font}`;
         gCtx.fillStyle = line.color;
         gCtx.strokeStyle = line.outline;
@@ -46,24 +63,19 @@ function renderMeme() {
 }
 
 function getOutlinePosStart(line) {
-    return { x: EDITOR_PADDING, y: line.y + OUTLINE_PADDING + 1 };
+    return { x: EDITOR_PADDING, y: line.y - getTextHeight() - OUTLINE_PADDING / 2 };
 }
 
-function getOutlinePosEnd(line) {
-    var textEndY = line.y - getTextHeight();
-    return { x: gCanvas.width - EDITOR_PADDING, y: textEndY - OUTLINE_PADDING / 2 };
+function getOutlineSize() {
+    return { width: gCanvas.width - EDITOR_PADDING * 2, height: getTextHeight() + OUTLINE_PADDING * 2 };
 }
 
 function drawLineOutline(line, lineId) {
     gCtx.beginPath();
     var start = getOutlinePosStart(line);
-    var end = getOutlinePosEnd(line);
+    var size = getOutlineSize();
 
-    gCtx.moveTo(start.x, start.y);
-    gCtx.lineTo(start.x, end.y);
-    gCtx.lineTo(end.x, end.y);
-    gCtx.lineTo(end.x, start.y);
-    gCtx.lineTo(start.x, start.y);
+    gCtx.rect(start.x, start.y, size.width, size.height);
 
     if (lineId === gMeme.selectedLineIdx) {
         gCtx.strokeStyle = gMeme.activeOutlineColor;
@@ -77,59 +89,87 @@ function drawLineOutline(line, lineId) {
 }
 
 function getCursorPosition(event) {
-    const rect = gCanvas.getBoundingClientRect();
-    const pos = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    //drawDummyRect(pos);
-    return pos;
-}
-
-function drawDummyRect(pos) {
-    gCtx.moveTo(pos.x - 5, pos.y - 5);
-    gCtx.lineTo(pos.x - 5, pos.y + 5);
-    gCtx.lineTo(pos.x + 5, pos.y + 5);
-    gCtx.lineTo(pos.x + 5, pos.y - 5);
-    gCtx.lineTo(pos.x - 5, pos.y - 5);
-    gCtx.strokeStyle = 'red';
-    gCtx.stroke();
+    return { x: event.offsetX, y: event.offsetY };
 }
 
 function onCanvasMouseDown(event) {
+    gMeme.selectedStickerIdx = -1;
+    gMeme.selectedLineIdx = -1;
     var clickPosition = getCursorPosition(event);
+    checkLineClicked(clickPosition);
+    !gCanvasFocus && checkStickerClicked(clickPosition);
+    renderMeme();
+}
+
+function drawRect(pos) {
+    gCtx.strokeStyle = 'red';
+    gCtx.rect(pos.x - 5, pos.y - 5, 10, 10);
+    gCtx.stroke();
+}
+
+function checkLineClicked(clickPosition) {
     var foundLineInd = gMeme.lines.findIndex(line => {
         var start = getOutlinePosStart(line);
-        var end = getOutlinePosEnd(line);
-        return (clickPosition.x > start.x && clickPosition.x < end.x
-            && clickPosition.y < start.y && clickPosition.y > end.y)
+        var size = getOutlineSize();
+        var t = checkPositionInBounderies(clickPosition, start, size);
+        return t;
     });
     if (foundLineInd !== -1) {
         gMeme.selectedLineIdx = foundLineInd;
+        updateControls(getSelectedLine());
         gCanvasFocus = true;
         gIsDragging = true;
     }
     else {
         gCanvasFocus = false;
     }
+}
+
+function updateControls(line){
+    document.querySelector('#meme-line').value = line.txt;
+    document.getElementById('stroke-color-input').value = line.outline;
+    document.getElementById('fill-color-input').value = line.color;
+    setIconColor('.letter-s', line.outline);
+    setIconColor('.fa-palette', line.color);
+    setIconColor('.fa-paint-brush', line.color);
+    var ind = Array.from(document.querySelector('.fonts-select').options).findIndex(option=>{
+        return option.value === line.font;
+    });
+    document.querySelector('.fonts-select').options[ind].selected = true;
+}
+
+function onCanvasMouseUp(event) {
+    gIsDragging = false;
+    gCurrentSticker = null;
+    console.log('canvas mouse up');
     renderMeme();
 }
 
 function onMouseUp(event) {
-    onLineMove(event);
-    gIsDragging = false;
+    console.log('window mouse up');
+    onCanvasMove(event);
 }
 
-function onLineMove(event) {
+function onCanvasMove(event) {
     if (!gIsDragging) return;
+    var pos = getCursorPosition(event);
 
-    var line = getSelectedLine();
-    var start = getOutlinePosStart(line);
-    var end = getCursorPosition(event);
-    if (end.y < gCanvas.height && end.y >= 0) {
-        line.y = end.y;
-        renderMeme();
+    if (gMeme.selectedLineIdx > -1) {
+        var line = getSelectedLine();
+        //var start = getOutlinePosStart(line);
+        if (pos.y < gCanvas.height && pos.y >= 0) {
+            line.y = pos.y;
+            renderMeme();
+        }
     }
-    // if (end.x < gCanvas.width && end.x >= 0) {
-    //     line.x = end.x;
-    // }
+    if (gMeme.selectedStickerIdx > -1) {
+        var sticker = gMeme.stickers[gMeme.selectedStickerIdx];
+        if (pos.x >= 0 && pos.x + sticker.size < gCanvas.width && pos.y >= 0 && pos.y + sticker.size < gCanvas.height) {
+            sticker.x = pos.x;
+            sticker.y = pos.y;
+            renderMeme();
+        }
+    }
 }
 
 function getLineX(line) {
@@ -171,13 +211,6 @@ function onMoveLine(val) {
     gCanvasFocus = true;
     var line = getSelectedLine();
     line.y += val;
-    renderMeme();
-}
-
-function onSwitchLines() {
-    gCanvasFocus = true;
-    gMeme.selectedLineIdx = (gMeme.selectedLineIdx === gMeme.lines.length - 1) ? 0 : gMeme.selectedLineIdx + 1;
-    document.querySelector('#meme-line').value = getSelectedLine().txt;
     renderMeme();
 }
 
@@ -243,9 +276,9 @@ function onStrokeClicked() {
 }
 
 function onStrokeColorChange(event) {
-    var strokeColor = event.target.value;
-    document.querySelector('.letter-s').style.color = strokeColor;
-    if (getSelectedLine()) getSelectedLine().outline = strokeColor;
+    var stroke = event.target.value;
+    setIconColor('.letter-s', stroke);
+    if (getSelectedLine()) getSelectedLine().outline = stroke;
     renderMeme();
 }
 
@@ -255,10 +288,15 @@ function onFillClicked() {
 
 function onFillColorChange(event) {
     var fillColor = event.target.value;
-    document.querySelector('.fa-palette').style.color = fillColor;
-    document.querySelector('.fa-paint-brush').style.color = fillColor;
+    setIconColor('.fa-palette', fillColor);
+    setIconColor('.fa-paint-brush', fillColor);
     if (getSelectedLine()) getSelectedLine().color = fillColor;
     renderMeme();
+}
+
+function setIconColor(icon, color){
+    if (color === 'white' || color === '#ffffff' || color === 'rgb(255, 255, 255)') color = 'black';
+    document.querySelector(icon).style.color = color;
 }
 
 function onDownloadMeme(elLink) {
